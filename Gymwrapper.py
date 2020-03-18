@@ -11,7 +11,7 @@ from mlagents_envs.base_env import BatchedStepResult
 from mlagents_envs.side_channel.engine_configuration_channel import EngineConfig, EngineConfigurationChannel
 
 
-# just for tennis and soccer!!!
+# just for tennis!!!
 class UnityEnv(gym.Env):
 
     def __init__(
@@ -23,7 +23,7 @@ class UnityEnv(gym.Env):
 
         self.brain_name = self.env.get_agent_groups()
         self.group_spec = self.env.get_agent_group_spec(self.brain_name[0])
-        engine_configuration_channel.set_configuration_parameters(time_scale=3.0)
+        engine_configuration_channel.set_configuration_parameters(width=640, height=480, time_scale=3.0)
         self.group_name = self.brain_name
 
         # Set observation and action spaces
@@ -46,9 +46,15 @@ class UnityEnv(gym.Env):
         self.env.reset()
         for i in range(2):
             step_result = self.env.get_step_result(self.group_name[i])
-            o.append(step_result.obs[0])
-            r.append(step_result.reward[0])
-            d.append(step_result.done[0])
+            obs = step_result.obs[0]
+            reward = step_result.reward[0]
+            done = step_result.done[0]
+            if obs.shape != (1, 27):
+                obs = obs[-1]
+                obs = np.expand_dims(obs, 0)
+            o.append(obs)
+            r.append(reward)
+            d.append(done)
         return o, r, d, info
 
     def step(self, action):
@@ -59,9 +65,15 @@ class UnityEnv(gym.Env):
         self.env.step()
         for i in range(2):
             step_result = self.env.get_step_result(self.group_name[i])
-            o.append(step_result.obs[0])
-            r.append(step_result.reward[0])
-            d.append(step_result.done[0])
+            obs = step_result.obs[0]
+            reward = step_result.reward[0]
+            done = step_result.done[0]
+            if obs.shape != (1, 27):
+                obs = obs[-1]
+                obs = np.expand_dims(obs, 0)
+            o.append(obs)
+            r.append(reward)
+            d.append(done)
         return o, r, d, info
 
     def render(self, mode="rgb_array"):
