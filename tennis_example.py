@@ -13,7 +13,7 @@ def main():
     """
     env_name = "envs/Tennis/mlagent"  # Name of the Unity environment binary to launch
 
-    env = UnityEnv(env_name)
+    env = UnityEnv(env_name, True)
 
     env.reset()
     # print(env.action_space)

@@ -11,14 +11,15 @@ from mlagents_envs.base_env import BatchedStepResult
 from mlagents_envs.side_channel.engine_configuration_channel import EngineConfig, EngineConfigurationChannel
 
 
-# just for tennis!!!
+# just for tennis and soccer!!!
 class UnityEnv(gym.Env):
 
     def __init__(
-            self, environment_filename
+            self, environment_filename, no_graphics
     ):
         engine_configuration_channel = EngineConfigurationChannel()
-        self.env = UnityEnvironment(file_name=environment_filename, side_channels=[engine_configuration_channel])
+        self.env = UnityEnvironment(file_name=environment_filename, side_channels=[engine_configuration_channel],
+                                    no_graphics=no_graphics)
         self.env.reset()
 
         self.brain_name = self.env.get_agent_groups()
